@@ -1,0 +1,5 @@
+class AqiScale
+{
+public:
+    AqiScale();
+};

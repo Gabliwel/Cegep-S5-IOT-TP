@@ -1,0 +1,5 @@
+class FlashFileReader
+{
+public:
+    FlashFileReader();
+};

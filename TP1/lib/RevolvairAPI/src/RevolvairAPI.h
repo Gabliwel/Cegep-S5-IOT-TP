@@ -1,0 +1,5 @@
+class RevolvairAPI
+{
+public:
+    RevolvairAPI();
+};

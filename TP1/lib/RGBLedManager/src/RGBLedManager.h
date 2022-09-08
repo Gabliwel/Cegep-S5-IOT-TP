@@ -1,0 +1,5 @@
+class RGBLedManager
+{
+public:
+    RGBLedManager();
+};

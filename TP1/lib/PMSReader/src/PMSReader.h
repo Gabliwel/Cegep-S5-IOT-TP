@@ -1,0 +1,5 @@
+class PMSReader
+{
+public:
+    PMSReader();
+};

@@ -1,0 +1,5 @@
+class RevolvairWebServer
+{
+public:
+    RevolvairWebServer();
+};
