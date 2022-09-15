@@ -1,4 +1,8 @@
 #include "WifiManager.h"
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <WiFiAP.h>
+#define LED_BUILTIN 2
 
 #include <Arduino.h>
 #include <WiFi.h>

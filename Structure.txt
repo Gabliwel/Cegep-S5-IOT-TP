@@ -1,0 +1,66 @@
+ /
+	◦ .gitignore
+	◦ platformio.ini
+ src
+	◦ main.cpp
+	◦ config.h
+	◦ config.example.h
+	
+ lib
+	◦ WifiManager\src
+		▪ Constructeur(STA_SSID, STA_PW, AP_SSID, AP_PW)
+			connect()
+			disconnect()
+			isConnected()
+			getInfo()
+			getStatus()
+			getSSID()
+			
+	◦ RevolvairWebServer\src
+		▪ Constructeur(WebServer)
+			getReaderInfo()
+			getWifiInfo()
+			getAboutPage()
+			
+	◦ RevolvairAPI\src
+		▪ Constructeur(API_URL, StationSlug, Token)
+			getAPIStatus()
+			postReaderValues()
+		
+	◦ PMSReader\src
+		▪ Constructeur(PMS1, PMS2)
+			getPMSReaderValue(PMS1, PMS2)
+			
+	◦ TempReader\src
+		▪ Constructeur(DHT)
+			init()
+			getDHTHumidityValue()
+			getDHTTemperatureValue()
+			
+	◦ RGBLedManager\src
+		▪ Constructeur(PinR, PinG, PinB)
+			init()
+			turnBlue()
+			turnGreen()
+			turnYellow()
+			turnOrange()
+			turnRed()
+		
+	◦ FlashFileReader\src
+		▪ Constructeur( )
+	◦ AqiScale\src
+		▪ Constructeur( )
+
+ data
+	◦ index.html
+	◦ style.css
+	◦ chartist.min.js
+	◦ chartist.min.css
+	◦ graph.html
+
+ test
+	◦ test_embedded
+		▪ test.cpp
+		▪ test_AqiScale.cpp
+		▪ test_RevolvairWebServer
+		▪ test_DEL_RGB
