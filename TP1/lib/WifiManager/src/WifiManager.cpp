@@ -4,22 +4,49 @@
 #include <WiFiAP.h>
 #define LED_BUILTIN 2
 
-WiFiServer server(80);
+#include <Arduino.h>
+#include <WiFi.h>
 
-WifiManager::WifiManager(char *STA_SSID, char *STA_PW, char *AP_SSID, char *AP_PW)
+WifiManager::WifiManager(const char* ssid, const char* password)
 {
-  pinMode(LED_BUILTIN, OUTPUT);
+    this->ssid = ssid;
+    this->password = password;
+}
 
-  Serial.begin(115200);
-  Serial.println();
-  Serial.println("Configuring access point...");
+void WifiManager::setup()
+{
+    connect();
+}
 
-  // You can remove the password parameter if you want the AP to be open.
-  WiFi.softAP(AP_SSID, AP_PW);
-  IPAddress myIP = WiFi.softAPIP();
-  Serial.print("AP IP address: ");
-  Serial.println(myIP);
-  server.begin();
+void WifiManager::loop()
+{
+    // Serial.println("1");
+}
 
-  Serial.println("Server started");
+void WifiManager::connect()
+{
+    WiFi.begin(ssid, password);
+    int counter = 0;
+    while (WiFi.status() != WL_CONNECTED && counter < 20) { // 10 sec, et *2 comme à chaque demi sec
+        delay(500); // donc 0.5 sec
+        Serial.print(".");
+        counter += 1;
+    }
+}
+
+bool WifiManager::isConnected()
+{
+    if(WiFi.status() == WL_CONNECTED)
+    {
+        Serial.print("Connected to ");
+        Serial.println(ssid);
+        Serial.print("IP address: ");
+        Serial.println(WiFi.localIP());
+        return true;
+    }
+    else 
+    {
+        Serial.println("Connexion impossible...");
+        return false;
+    }
 }
