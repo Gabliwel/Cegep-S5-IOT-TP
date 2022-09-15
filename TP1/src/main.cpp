@@ -17,6 +17,9 @@
 #include <TempReader.h>
 #include <WifiManager.h>
 
+int period = 2000;
+unsigned long time_now = 0;
+
 #define BuiltIn_Del 2
 
 //Wifi
@@ -52,11 +55,18 @@ void setup() {
     webServer.setup();
   }
 
-  //PMS SETUP:
-  
 }
-
 void loop() {
-  //int * pmsstuff = pmsReader.getPMSValues();
-  //Serial.print(pmsstuff[0]);
+  time_now = millis();      
+  int * pmsstuff = pmsReader.getPMSValues();
+  Serial.print(pmsstuff[0]);
+  Serial.print(",");
+  Serial.print(pmsstuff[1]);
+  Serial.print(",");
+  Serial.print(pmsstuff[2]);
+  Serial.println("");
+  while(millis() < time_now + period){ 
+    
+  }        
+  
 }
