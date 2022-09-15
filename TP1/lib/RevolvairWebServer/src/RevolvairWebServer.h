@@ -1,3 +1,6 @@
+#include <WebServer.h>
+#include <FlashFileReader.h>
+
 class RevolvairWebServer
 {
 public:

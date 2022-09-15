@@ -1,7 +1,5 @@
 #include "RevolvairWebServer.h"
 
-#include <WebServer.h>
-
 RevolvairWebServer::RevolvairWebServer(WebServer &server)
 {
   this->server = &server;

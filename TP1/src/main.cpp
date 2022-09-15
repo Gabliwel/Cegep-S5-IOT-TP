@@ -7,8 +7,6 @@
 #include <FS.h>
 #include <SPIFFS.h>
 
-
-
 #include "config.h"
 #include <AqiScale.h>
 #include <FlashFileReader.h>
@@ -29,6 +27,8 @@ WebServer server(80);
 RevolvairWebServer webServer = RevolvairWebServer(server);
 
 //PMSReader
+PMS firstPms(Serial2);
+PMSReader pmsReader(firstPms);
 
 
 void setup() {
@@ -51,8 +51,12 @@ void setup() {
     
     webServer.setup();
   }
+
+  //PMS SETUP:
+  
 }
 
 void loop() {
-  // wifiManager.loop();
+  //int * pmsstuff = pmsReader.getPMSValues();
+  //Serial.print(pmsstuff[0]);
 }
