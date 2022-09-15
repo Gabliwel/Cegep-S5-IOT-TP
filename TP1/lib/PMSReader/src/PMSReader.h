@@ -3,5 +3,5 @@ class PMSReader
 {
 public:
     PMSReader(PMS *pms);
-    int getPMSValues();
+    int * getPMSValues();
 };
