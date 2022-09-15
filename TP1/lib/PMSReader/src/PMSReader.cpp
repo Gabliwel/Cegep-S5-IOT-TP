@@ -1,6 +1,6 @@
 #include "PMSReader.h"
 
-PMSReader::PMSReader()
+PMSReader::PMSReader(PMS *pms)
 {
     
 }

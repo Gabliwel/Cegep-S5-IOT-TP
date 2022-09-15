@@ -1,5 +1,7 @@
+#include <PMS.h>  
 class PMSReader
 {
 public:
-    PMSReader();
+    PMSReader(PMS *pms);
+    int getPMSValues();
 };

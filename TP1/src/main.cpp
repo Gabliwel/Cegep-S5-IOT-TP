@@ -7,6 +7,8 @@
 #include <FS.h>
 #include <SPIFFS.h>
 
+
+
 #include "config.h"
 #include <AqiScale.h>
 #include <FlashFileReader.h>
@@ -25,6 +27,9 @@ WifiManager wifiManager = WifiManager(SSID, PASSWORD);
 //WebServer
 WebServer server(80);
 RevolvairWebServer webServer = RevolvairWebServer(server);
+
+//PMSReader
+
 
 void setup() {
   pinMode(BuiltIn_Del, OUTPUT);

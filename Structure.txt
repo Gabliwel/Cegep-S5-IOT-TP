@@ -28,8 +28,8 @@
 			postReaderValues()
 		
 	◦ PMSReader\src
-		▪ Constructeur(PMS1, PMS2)
-			getPMSReaderValue(PMS1, PMS2)
+		▪ Constructeur(PMS *pms)
+			getPMSReaderValue()
 			
 	◦ TempReader\src
 		▪ Constructeur(DHT)
