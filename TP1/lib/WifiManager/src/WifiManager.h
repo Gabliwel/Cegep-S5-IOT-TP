@@ -1,5 +1,12 @@
 class WifiManager
 {
 public:
-    WifiManager(char *STA_SSID, char *STA_PW, char *AP_SSID, char *AP_PW);
+    WifiManager(const char* ssid, const char* password);
+    void setup(void);
+    void loop(void);
+    void connect();
+    bool isConnected();
+private:
+    const char* ssid;
+    const char* password;
 };
