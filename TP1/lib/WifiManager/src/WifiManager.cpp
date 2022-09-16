@@ -21,6 +21,7 @@ void WifiManager::loop()
 
 void WifiManager::connect()
 {
+    WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
     int counter = 0;
     while (WiFi.status() != WL_CONNECTED && counter < 20) { // 10 sec, et *2 comme à chaque demi sec
@@ -28,21 +29,28 @@ void WifiManager::connect()
         Serial.print(".");
         counter += 1;
     }
+
+    if(isConnected())
+    {
+        Serial.print("Connected to ");
+        Serial.println(ssid);
+        Serial.print("IP address: ");
+        Serial.println(WiFi.localIP());
+    }
+    else
+    {
+        Serial.print("Connexion impossible...");
+    }
 }
 
 bool WifiManager::isConnected()
 {
     if(WiFi.status() == WL_CONNECTED)
     {
-        Serial.print("Connected to ");
-        Serial.println(ssid);
-        Serial.print("IP address: ");
-        Serial.println(WiFi.localIP());
         return true;
     }
     else 
     {
-        Serial.println("Connexion impossible...");
         return false;
     }
 }

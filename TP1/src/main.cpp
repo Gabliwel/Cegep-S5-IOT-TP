@@ -5,7 +5,6 @@
 #include <WebServer.h>
 #include <ESPmDNS.h>
 #include <FS.h>
-#include <SPIFFS.h>
 
 #include "config.h"
 #include <AqiScale.h>
@@ -39,15 +38,14 @@ void setup() {
       Serial.println("MDNS responder started");
     }
 
-    SPIFFS.begin();
-    if (SPIFFS.begin()) {
-      Serial.println("SPIFFS begin");
-    }
-    
     webServer.setup();
   }
 }
 
 void loop() {
-  // wifiManager.loop();
+  if(wifiManager.isConnected())
+  {
+    webServer.loop();
+  }
+  delay(2);
 }

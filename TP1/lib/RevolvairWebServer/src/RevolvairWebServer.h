@@ -1,3 +1,7 @@
+#include <WebServer.h>
+#include <FlashFileReader.h>
+#include <string>
+
 class RevolvairWebServer
 {
 public:
@@ -5,7 +9,6 @@ public:
     static const int led = 13;
     void handleRoot();
     void handleNotFound();
-    bool loadFromSpiffs(String path);
     void setup(void);
     void loop(void);
 private:
