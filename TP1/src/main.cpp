@@ -6,6 +6,8 @@
 #include <ESPmDNS.h>
 #include <FS.h>
 #include <SPIFFS.h>
+#include <Adafruit_Sensor.h>
+#include "DHT.h"
 
 #include "config.h"
 #include <AqiScale.h>
@@ -35,6 +37,10 @@ RevolvairWebServer webServer = RevolvairWebServer(server);
 PMS firstPms(Serial2);
 PMSReader pmsReader(firstPms);
 int * pmsValues;
+
+//DHT
+#define DHT_PIN 18 // ESP32 IO18
+#define DHT_TYPE DHT22
 
 
 void setup() {
