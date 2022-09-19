@@ -17,6 +17,11 @@ void RevolvairWebServer::handleRoot()
   this->server->send(302, "text/plain", "");
 }
 
+void RevolvairWebServer::sendValues()
+{
+  this->server->send(200, "text/plain", "test");
+}
+
 void RevolvairWebServer::handleNotFound()
 {
   Serial.println("Not found");
@@ -40,6 +45,7 @@ void RevolvairWebServer::handleNotFound()
 void RevolvairWebServer::setup()
 {
   this->server->on("/", HTTP_GET, std::bind(&RevolvairWebServer::handleRoot, this));
+  this->server->on("/readPMS", HTTP_GET, std::bind(&RevolvairWebServer::sendValues, this));
   this->server->onNotFound(std::bind(&RevolvairWebServer::handleNotFound, this));
   
   this->server->begin();
