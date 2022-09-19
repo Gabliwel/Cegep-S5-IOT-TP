@@ -8,5 +8,6 @@ public:
     int * getPMSValues();
 private:
     PMS * currentPMS;
-    PMS::DATA pmsData;
+    PMS::DATA pmsData; 
+    int values[3]; 
 };

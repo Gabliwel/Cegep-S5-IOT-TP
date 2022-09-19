@@ -17,6 +17,8 @@
 #include <TempReader.h>
 #include <WifiManager.h>
 
+#include <PMS.h>
+
 int period = 2000;
 unsigned long time_now = 0;
 
@@ -32,12 +34,14 @@ RevolvairWebServer webServer = RevolvairWebServer(server);
 //PMSReader
 PMS firstPms(Serial2);
 PMSReader pmsReader(firstPms);
+int * pmsValues;
 
 
 void setup() {
   pinMode(BuiltIn_Del, OUTPUT);
   digitalWrite(BuiltIn_Del, LOW);
   Serial.begin(115200);
+  Serial2.begin(115200);
   Serial.println("");
 
   wifiManager.setup();
@@ -58,15 +62,15 @@ void setup() {
 }
 void loop() {
   time_now = millis();      
-  int * pmsstuff = pmsReader.getPMSValues();
-  Serial.print(pmsstuff[0]);
-  Serial.print(",");
-  Serial.print(pmsstuff[1]);
-  Serial.print(",");
-  Serial.print(pmsstuff[2]);
-  Serial.println("");
-  while(millis() < time_now + period){ 
-    
-  }        
+ 
   
+  while(millis() < time_now + period){ 
+    pmsValues = pmsReader.getPMSValues();
+  }        
+  Serial.print(pmsValues[0]);
+  Serial.print(",");
+  Serial.print(pmsValues[1]);
+  Serial.print(",");
+  Serial.print(pmsValues[2]);
+  Serial.println("");
 }
