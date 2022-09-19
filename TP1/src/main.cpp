@@ -50,7 +50,7 @@ void setup() {
   pinMode(BuiltIn_Del, OUTPUT);
   digitalWrite(BuiltIn_Del, LOW);
   Serial.begin(115200);
-  Serial2.begin(115200);
+  Serial2.begin(9600);
   Serial.println("");
   tempReader.init();
 
