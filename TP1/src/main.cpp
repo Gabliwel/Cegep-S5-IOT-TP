@@ -6,6 +6,7 @@
 #include <ESPmDNS.h>
 #include <FS.h>
 #include <SPIFFS.h>
+#include <Adafruit_Sensor.h>
 
 #include "config.h"
 #include <AqiScale.h>
@@ -19,7 +20,7 @@
 
 #include <PMS.h>
 
-int period = 2000;
+int period = 12000;
 unsigned long time_now = 0;
 
 #define BuiltIn_Del 2
@@ -36,6 +37,14 @@ PMS firstPms(Serial2);
 PMSReader pmsReader(firstPms);
 int * pmsValues;
 
+//DHT
+#define DHT_PIN 18 // ESP32 IO18
+#define DHT_TYPE DHT22
+DHT dht(DHT_PIN, DHT_TYPE);
+TempReader tempReader(dht);
+float temperature = 0;
+float humidity = 0;
+
 
 void setup() {
   pinMode(BuiltIn_Del, OUTPUT);
@@ -43,6 +52,7 @@ void setup() {
   Serial.begin(115200);
   Serial2.begin(115200);
   Serial.println("");
+  tempReader.init();
 
   wifiManager.setup();
   if(wifiManager.isConnected())
@@ -62,15 +72,21 @@ void setup() {
 }
 void loop() {
   time_now = millis();      
- 
+  temperature = tempReader.getTemperatureValue();
+  humidity = tempReader.getHumidityValue();
   
   while(millis() < time_now + period){ 
     pmsValues = pmsReader.getPMSValues();
+    
   }        
   Serial.print(pmsValues[0]);
   Serial.print(",");
   Serial.print(pmsValues[1]);
   Serial.print(",");
   Serial.print(pmsValues[2]);
+  Serial.println("");
+  Serial.print(temperature);
+  Serial.println("");
+  Serial.print(humidity);
   Serial.println("");
 }
