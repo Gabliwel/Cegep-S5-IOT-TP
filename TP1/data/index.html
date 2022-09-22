@@ -13,20 +13,22 @@
             <li><a href="/">Air quality</a></li>
             <li><a href="/temp">Temperature</a></li>
             <li><a href="/wifi">Wifi</a></li>
+            <li><a href="/about">About us</a></li>
         </ul>
     </div>
     <h1>Air quality</h1>
     <h2>Current value</h2>
     <h2>PM2.5 realtime value (ug/m<sup>3</sup>)</h2>
-    <div id="PMSValue" width="400" height="100" class="realtimeValue"></div>
+    <div id="PMSValue" width="400" height="100" class="realtimeValue">Loading...</div>
 
     <script>
-    setInterval(function() { getData(); }, 2000);
+    setInterval(function() { getData(); }, 5000);
     function getData() {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("PMSValue").innerHTML = this.responseText;
+                var json = JSON.parse(this.responseText);
+                document.getElementById("PMSValue").innerHTML = json.PM;
             }
         };
         xhttp.open("GET", "readPMS", true);

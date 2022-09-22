@@ -8,6 +8,9 @@ public:
     RevolvairWebServer(WebServer &server);
     static const int led = 13;
     void handleRoot();
+    void handleTemp();
+    void handleWifi();
+    void handleAbout();
     void handleNotFound();
     void sendValues();
     void setup(void);
@@ -15,4 +18,7 @@ public:
 private:
     WebServer *server;
     FlashFileReader flashFileReader;
+
+    String SSID = "N/D";
+    String wifiForce = "N/D";
 };

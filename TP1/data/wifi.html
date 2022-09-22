@@ -13,23 +13,25 @@
             <li><a href="/">Air quality</a></li>
             <li><a href="/temp">Temperature</a></li>
             <li><a href="/wifi">Wifi</a></li>
+            <li><a href="/about">About us</a></li>
         </ul>
     </div>
     <h1>Wifi</h1>
     <h2>Current value</h2>
     <h2>SSID</h2>
-    <div id="SSID" width="400" height="100" class="realtimeValue"></div>
+    <div id="SSID" width="400" height="100" class="realtimeValue">Loading...</div>
     <h2>Wifi signal</h2>
-    <div id="WifiSignal" width="400" height="100" class="realtimeValue"></div>
+    <div id="WifiSignal" width="400" height="100" class="realtimeValue">Loading...</div>
 
     <script>
-    setInterval(function() { getData(); }, 2000);
+    setInterval(function() { getData(); }, 5000);
     function getData() {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("SSID").innerHTML = this.responseText;
-                document.getElementById("WifiSignal").innerHTML = this.responseText;
+                var json = JSON.parse(this.responseText);
+                document.getElementById("SSID").innerHTML = json.SSID;
+                document.getElementById("WifiSignal").innerHTML = json.WifiForce;
             }
         };
         xhttp.open("GET", "readPMS", true);
