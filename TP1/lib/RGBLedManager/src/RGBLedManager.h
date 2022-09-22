@@ -5,7 +5,7 @@ enum Color {blue, green, yellow, orange, red};
 class RGBLedManager
 {
 public:
-    RGBLedManager();
+    RGBLedManager(uint8_t ledR, uint8_t ledG, uint8_t ledB);
     void setup(void);
     void loop(void);
     void changeColor(Color color);
@@ -15,9 +15,9 @@ private:
     uint32_t R, G, B;
     bool lightIsOn = false;
 
-    const uint8_t ledR = 12;  
-    const uint8_t ledG = 13;
-    const uint8_t ledB = 14;
+    uint8_t ledR;  
+    uint8_t ledG;
+    uint8_t ledB;
 
     long timer = 0;
     long lastTimerChange = 0;

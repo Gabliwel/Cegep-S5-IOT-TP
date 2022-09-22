@@ -20,16 +20,22 @@
 
 //Wifi
 WifiManager wifiManager = WifiManager(SSID, PASSWORD);
-long timer = 0;
+long timerWifi = 0;
 long lastConnectionAttempt = 0;
-const long CONNECTION_INTERVAL = 1000 * 20;
+const long CONNECTION_INTERVAL_WIFI = 1000 * 20;
 
 //WebServer
 WebServer server(80);
 RevolvairWebServer webServer = RevolvairWebServer(server);
 
 //RGBLedManager
-RGBLedManager ledManager = RGBLedManager();
+RGBLedManager ledManager = RGBLedManager(ledR, ledG, ledB);
+
+//API
+RevolvairAPI apiManager = RevolvairAPI(MAC_ID);
+long timerApi = 0;
+long lastApiCall = 0;
+const long API_INTERVAL = 1000 * 120;
 
 void setup() {
   Serial.begin(115200);
@@ -46,6 +52,8 @@ void setup() {
       Serial.println("MDNS responder started");
     }
     webServer.setup();
+    // Aller chercher du data avant
+    apiManager.postData();
   }
   else
   {
@@ -57,18 +65,25 @@ void loop() {
   if(wifiManager.isConnected())
   {
     webServer.loop();
+    if(timerApi - lastApiCall > API_INTERVAL)
+    {
+      //Aller chercher du data
+      apiManager.postData();
+      lastApiCall = millis();
+    }
+    timerApi = millis();
   }
   else
   {
-    if(timer - lastConnectionAttempt > CONNECTION_INTERVAL)
+    if(timerWifi - lastConnectionAttempt > CONNECTION_INTERVAL_WIFI)
     {
       wifiManager.connect();
       lastConnectionAttempt = millis();
     }
-    timer = millis();
+    timerWifi = millis();
   }
 
-  //changer la couleur avant
+  //changer la couleur avant au besoin, pis check avant le if du wifi
   ledManager.loop();
   delay(2);
 }

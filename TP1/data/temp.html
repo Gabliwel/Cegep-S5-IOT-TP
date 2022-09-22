@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>RevolvAir.org - Air quality</title>
+    <title>RevolvAir.org - Temperature</title>
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
 </head>
@@ -15,10 +15,12 @@
             <li><a href="/wifi">Wifi</a></li>
         </ul>
     </div>
-    <h1>Air quality</h1>
+    <h1>Temperature</h1>
     <h2>Current value</h2>
-    <h2>PM2.5 realtime value (ug/m<sup>3</sup>)</h2>
-    <div id="PMSValue" width="400" height="100" class="realtimeValue"></div>
+    <h2>Temperature (<sup>o</sup>C)</h2>
+    <div id="Temperature" width="400" height="100" class="realtimeValue"></div>
+    <h2>Relative humidity (%HR)</h2>
+    <div id="Humidity" width="400" height="100" class="realtimeValue"></div>
 
     <script>
     setInterval(function() { getData(); }, 2000);
@@ -26,7 +28,8 @@
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("PMSValue").innerHTML = this.responseText;
+                document.getElementById("Temperature").innerHTML = this.responseText;
+                document.getElementById("Humidity").innerHTML = this.responseText;
             }
         };
         xhttp.open("GET", "readPMS", true);

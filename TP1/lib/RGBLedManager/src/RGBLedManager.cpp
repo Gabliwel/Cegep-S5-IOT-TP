@@ -1,8 +1,10 @@
 #include "RGBLedManager.h"
 
-RGBLedManager::RGBLedManager()
+RGBLedManager::RGBLedManager(uint8_t ledR, uint8_t ledG, uint8_t ledB)
 {
-    
+    this->ledR = ledR;
+    this->ledG = ledG;
+    this->ledB = ledB;
 }
 
 void RGBLedManager::setup()
