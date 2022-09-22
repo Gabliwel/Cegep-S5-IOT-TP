@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <string.h>
 
 #include <WiFi.h>
 #include <WiFiClient.h>
@@ -45,6 +46,9 @@ TempReader tempReader(dht);
 float temperature = 0;
 float humidity = 0;
 
+//AQIScale
+AqiScale aqiscale = AqiScale();
+
 
 void setup() {
   pinMode(BuiltIn_Del, OUTPUT);
@@ -89,4 +93,5 @@ void loop() {
   Serial.println("");
   Serial.print(humidity);
   Serial.println("");
+  Serial.print(aqiscale.getAQI(pmsValues[1]));
 }
