@@ -1,6 +1,6 @@
 body{background-color: #e2e2e2; font-family: sans-serif; }
 
-#PMSValue {
+.realtimeValue {
     border-color: #e91e63;
     border-style: solid;
     max-width: 20%;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>RevolvAir.org - Air quality</title>
+    <title>RevolvAir.org - Wifi</title>
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
 </head>
@@ -16,10 +16,12 @@
             <li><a href="/about">About us</a></li>
         </ul>
     </div>
-    <h1>Air quality</h1>
+    <h1>Wifi</h1>
     <h2>Current value</h2>
-    <h2>PM2.5 realtime value (ug/m<sup>3</sup>)</h2>
-    <div id="PMSValue" width="400" height="100" class="realtimeValue">Loading...</div>
+    <h2>SSID</h2>
+    <div id="SSID" width="400" height="100" class="realtimeValue">Loading...</div>
+    <h2>Wifi signal</h2>
+    <div id="WifiSignal" width="400" height="100" class="realtimeValue">Loading...</div>
 
     <script>
     setInterval(function() { getData(); }, 5000);
@@ -28,7 +30,8 @@
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 var json = JSON.parse(this.responseText);
-                document.getElementById("PMSValue").innerHTML = json.PM;
+                document.getElementById("SSID").innerHTML = json.SSID;
+                document.getElementById("WifiSignal").innerHTML = json.WifiForce;
             }
         };
         xhttp.open("GET", "readPMS", true);
