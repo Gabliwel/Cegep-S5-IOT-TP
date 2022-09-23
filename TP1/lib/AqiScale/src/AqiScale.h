@@ -3,16 +3,17 @@
 class AqiScale
 {
 public:
-    AqiScale(RGBLedManager &ledManager);
-    char* getAQI(int pm25);
+    AqiScale();
+    char* getPollutionLvl(int pm25);
+    float getAQI(int pm25);
 private:
     RGBLedManager * ledmanager;
-    char iqa1[4] = "Bon";
-    char iqa2[11] = "Acceptable";
-    char iqa3[8] = "Mauvais";
-    char iqa4[14] = "Très Mauvais";
-    int meanIQA = 35;
-    int goodpm25Limit = 12;
-    int okpm25Limit = 35;
-    int badpm25Limit = 55;
+    char lvl1[4] = "Bon";
+    char lvl2[11] = "Acceptable";
+    char lvl3[8] = "Mauvais";
+    char lvl4[14] = "Très Mauvais";
+    const int goodpm25Limit = 12;
+    const int okpm25Limit = 35;
+    const int badpm25Limit = 55;
+    const float AQI_NORM = 25;
 };

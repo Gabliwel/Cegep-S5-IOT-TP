@@ -45,7 +45,7 @@ void RevolvairWebServer::sendValues()
   doc["Description"] = this->description;
   doc["Temp"] = this->temp;
   doc["Humidity"] = this->humidity;
-  doc["SSID"] = this->SSID;
+  doc["SSID"] = this->ssid;
   doc["WifiForce"] = this->wifiForce;
 
   serializeJson(doc, jsonPm25Package);
@@ -98,8 +98,8 @@ void RevolvairWebServer::setCaptorsData(int PM25, char* desc, float temp, float 
   this->humidity = humidity;
 }
 
-void RevolvairWebServer::setWifiInfo(char* ssid, long wifiForce)
+void RevolvairWebServer::setWifiInfo(const char* ssid, long wifiForce)
 {
-  this->SSID = ssid;
+  this->ssid = ssid;
   this->wifiForce = wifiForce;
 }

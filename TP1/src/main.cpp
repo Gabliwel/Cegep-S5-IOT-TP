@@ -60,7 +60,7 @@ float temperature = 0;
 float humidity = 0;
 
 //AQIScale
-AqiScale aqiscale = AqiScale(ledManager);
+AqiScale aqiscale = AqiScale();
 
 void setup() {
   Serial.begin(115200);
@@ -87,12 +87,47 @@ void setup() {
   {
     lastConnectionAttempt = millis();
   }
+}
 
+void printLoop(){
+  Serial.println("---------------------");
+  Serial.print("PM: ");
+  Serial.print(pmsValues[0]);
+  Serial.print(",");
+  Serial.print(pmsValues[1]);
+  Serial.print(",");
+  Serial.print(pmsValues[2]);
+  Serial.println("");
+  //--------------- print le DCL 2.5, mais jsp c'est quoi------------
+  //Serial.print("DCL 2.5: ");
+  //Serial.print("DCL2.5");
+  //Serial.println("");
+  Serial.print("IQA de l’air: ");
+  Serial.print(aqiscale.getAQI(pmsValues[1]));
+  Serial.println("");
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println("");
+  Serial.print("Humidite: ");
+  Serial.print(humidity);
+  Serial.println("");
+  Serial.println(aqiscale.getPollutionLvl(pmsValues[1]));
+  Serial.println("---------------------");
 }
 
 void loop() {
   if(wifiManager.isConnected())
   {
+    // on pourait aussi obtenir les donnés sans le wifi...
+    // ...mais inutile et non précisé dans l'énoncé
+
+    // l'énoncé dit aussi:
+    // lire les valeurs des capteurs...  ...aux 2 minutes, mais aussi pas clair comme il faut aussi print a chaque refresh
+    temperature = tempReader.getTemperatureValue();
+    humidity = tempReader.getHumidityValue();
+    pmsValues = pmsReader.getPMSValues();
+    printLoop();
+
     if(timerApi - lastApiCall > API_INTERVAL)
     {
       //Aller chercher du data
@@ -101,33 +136,10 @@ void loop() {
     }
     timerApi = millis();
 
-    //Code de Cédric
-    //*****************************************
-    time_now = millis();      
-    temperature = tempReader.getTemperatureValue();
-    humidity = tempReader.getHumidityValue();
-    
-    //remplacer le while par un timer
-    /*while(millis() < time_now + period){ 
-      pmsValues = pmsReader.getPMSValues();
-      
-    }*/        
-    pmsValues = pmsReader.getPMSValues();
-    Serial.print(pmsValues[0]);
-    Serial.print(",");
-    Serial.print(pmsValues[1]);
-    Serial.print(",");
-    Serial.print(pmsValues[2]);
-    Serial.println("");
-    Serial.print(temperature);
-    Serial.println("");
-    Serial.print(humidity);
-    Serial.println("");
-    Serial.print(aqiscale.getAQI(pmsValues[1]));
-    //*****************************************
-
-    webServer.setCaptorsData(pmsValues[1], aqiscale.getAQI(pmsValues[1]), temperature, humidity);
+    webServer.setCaptorsData(pmsValues[1], aqiscale.getPollutionLvl(pmsValues[1]), temperature, humidity);
+    webServer.setWifiInfo(SSID, wifiManager.getWifiForce());
     webServer.loop();
+    ledManager.changeColorOnPmValue(pmsValues[1]);
   }
   else
   {
@@ -145,27 +157,3 @@ void loop() {
   ledManager.loop();
   delay(2);
 }
-
-/*
-void readerloop(){
-  delay(2);
-  time_now = millis();      
-  temperature = tempReader.getTemperatureValue();
-  humidity = tempReader.getHumidityValue();
-  
-  while(millis() < time_now + period){ 
-    pmsValues = pmsReader.getPMSValues();
-    
-  }        
-  Serial.print(pmsValues[0]);
-  Serial.print(",");
-  Serial.print(pmsValues[1]);
-  Serial.print(",");
-  Serial.print(pmsValues[2]);
-  Serial.println("");
-  Serial.print(temperature);
-  Serial.println("");
-  Serial.print(humidity);
-  Serial.println("");
-  Serial.print(aqiscale.getAQI(pmsValues[1]));
-}*/

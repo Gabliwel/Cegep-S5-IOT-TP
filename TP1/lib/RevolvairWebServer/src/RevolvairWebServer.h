@@ -16,12 +16,12 @@ public:
     void setup(void);
     void loop(void);
     void setCaptorsData(int PM25, char* desc, float temp, float humidity);
-    void setWifiInfo(char* ssid, long wifiForce);
+    void setWifiInfo(const char* ssid, long wifiForce);
 private:
     WebServer *server;
     FlashFileReader flashFileReader;
 
-    String SSID = "N/D";
+    String ssid = "N/D";
     long wifiForce = -1;
     int PM25 = -1;
     String description = "N/D";
