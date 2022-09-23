@@ -63,6 +63,12 @@ void RGBLedManager::loop()
 
 void RGBLedManager::changeColor(Color color)
 {
+    //Si la couleur est la même on ne change rien
+    if(this->currentColor == color)
+    {
+        return;
+    }
+
     this->currentColor = color;
     timer = 0;
     lastTimerChange = 0;

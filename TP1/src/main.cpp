@@ -37,7 +37,6 @@ const long CONNECTION_INTERVAL_WIFI = 1000 * 20;
 WebServer server(80);
 RevolvairWebServer webServer = RevolvairWebServer(server);
 
-
 //RGBLedManager
 RGBLedManager ledManager = RGBLedManager(ledR, ledG, ledB);
 
@@ -82,7 +81,7 @@ void setup() {
     }
     webServer.setup();
     // Aller chercher du data avant
-    apiManager.postData();
+    // apiManager.postData();
   }
   else
   {
@@ -90,17 +89,45 @@ void setup() {
   }
 
 }
+
 void loop() {
   if(wifiManager.isConnected())
   {
-    webServer.loop();
     if(timerApi - lastApiCall > API_INTERVAL)
     {
       //Aller chercher du data
-      apiManager.postData();
+      //apiManager.postData();
       lastApiCall = millis();
     }
     timerApi = millis();
+
+    //Code de Cédric
+    //*****************************************
+    time_now = millis();      
+    temperature = tempReader.getTemperatureValue();
+    humidity = tempReader.getHumidityValue();
+    
+    //remplacer le while par un timer
+    /*while(millis() < time_now + period){ 
+      pmsValues = pmsReader.getPMSValues();
+      
+    }*/        
+    pmsValues = pmsReader.getPMSValues();
+    Serial.print(pmsValues[0]);
+    Serial.print(",");
+    Serial.print(pmsValues[1]);
+    Serial.print(",");
+    Serial.print(pmsValues[2]);
+    Serial.println("");
+    Serial.print(temperature);
+    Serial.println("");
+    Serial.print(humidity);
+    Serial.println("");
+    Serial.print(aqiscale.getAQI(pmsValues[1]));
+    //*****************************************
+
+    webServer.setCaptorsData(pmsValues[1], aqiscale.getAQI(pmsValues[1]), temperature, humidity);
+    webServer.loop();
   }
   else
   {
@@ -108,30 +135,14 @@ void loop() {
     {
       wifiManager.connect();
       lastConnectionAttempt = millis();
+      if(!wifiManager.isConnected())
+      {
+        ledManager.changeColor(Color::blue);
+      }
     }
     timerWifi = millis();
   }
 
-  //changer la couleur avant au besoin, pis check avant le if du wifi
   ledManager.loop();
   delay(2);
-  time_now = millis();      
-  temperature = tempReader.getTemperatureValue();
-  humidity = tempReader.getHumidityValue();
-  
-  while(millis() < time_now + period){ 
-    pmsValues = pmsReader.getPMSValues();
-    
-  }        
-  Serial.print(pmsValues[0]);
-  Serial.print(",");
-  Serial.print(pmsValues[1]);
-  Serial.print(",");
-  Serial.print(pmsValues[2]);
-  Serial.println("");
-  Serial.print(temperature);
-  Serial.println("");
-  Serial.print(humidity);
-  Serial.println("");
-  Serial.print(aqiscale.getAQI(pmsValues[1]));
 }
