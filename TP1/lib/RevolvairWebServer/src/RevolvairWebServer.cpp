@@ -41,11 +41,12 @@ void RevolvairWebServer::sendValues()
   String jsonPm25Package = "";
   StaticJsonDocument<200> doc;
 
-  doc["PM"] = "a";
-  doc["Temp"] = "b";
-  doc["Humidity"] = "c";
-  doc["SSID"] = "d";
-  doc["WifiForce"] = "e";
+  doc["PM"] = this->PM25;
+  doc["Description"] = this->description;
+  doc["Temp"] = this->temp;
+  doc["Humidity"] = this->humidity;
+  doc["SSID"] = this->ssid;
+  doc["WifiForce"] = this->wifiForce;
 
   serializeJson(doc, jsonPm25Package);
   this->server->send(200, "application/json", jsonPm25Package);
@@ -87,4 +88,18 @@ void RevolvairWebServer::setup()
 void RevolvairWebServer::loop()
 {
   this->server->handleClient();
+}
+
+void RevolvairWebServer::setCaptorsData(int PM25, char* desc, float temp, float humidity)
+{
+  this->PM25 = PM25;
+  this->description = desc;
+  this->temp = temp;
+  this->humidity = humidity;
+}
+
+void RevolvairWebServer::setWifiInfo(const char* ssid, long wifiForce)
+{
+  this->ssid = ssid;
+  this->wifiForce = wifiForce;
 }

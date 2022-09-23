@@ -20,6 +20,8 @@
     <h2>Current value</h2>
     <h2>PM2.5 realtime value (ug/m<sup>3</sup>)</h2>
     <div id="PMSValue" width="400" height="100" class="realtimeValue">Loading...</div>
+    <h2>Description</h2>
+    <div id="Description" width="400" height="100" class="realtimeValue">Loading...</div>
 
     <script>
     setInterval(function() { getData(); }, 5000);
@@ -29,6 +31,7 @@
             if (this.readyState == 4 && this.status == 200) {
                 var json = JSON.parse(this.responseText);
                 document.getElementById("PMSValue").innerHTML = json.PM;
+                document.getElementById("Description").innerHTML = json.Description;
             }
         };
         xhttp.open("GET", "readPMS", true);

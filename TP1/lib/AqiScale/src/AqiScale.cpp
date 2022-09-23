@@ -1,26 +1,27 @@
 #include "AqiScale.h"
 
-AqiScale::AqiScale(RGBLedManager &ledManager)
+AqiScale::AqiScale()
 {
-    this->ledmanager = &ledManager;
+
 }
 
-char* AqiScale::getAQI(int pm25)
+char* AqiScale::getPollutionLvl(int pm25)
 {
-  int iqaValue = pm25/meanIQA*50;
-  
-  if(iqaValue < goodpm25Limit){
-    ledmanager->changeColor(red);
-    return iqa1;
+  // https://revolvair.org/indice-de-qualite-de-lair-iqa/
+  // Échelle pour les données brutes PM 2.5 en microgrammes par mètre cube (μg/m3)
+  if(pm25 < goodpm25Limit){
+    return lvl1;
   }
-  if(iqaValue < okpm25Limit){
-    ledmanager->changeColor(yellow);
-    return iqa2;
+  if(pm25 < okpm25Limit){
+    return lvl2;
   }
-  if(iqaValue < badpm25Limit){
-    ledmanager->changeColor(orange);
-    return iqa3;
+  if(pm25 < badpm25Limit){
+    return lvl3;
   }
-  ledmanager->changeColor(red);
-  return iqa4;
+  return lvl4;
+}
+
+float AqiScale::getAQI(int pm25)
+{
+  return (pm25 * AQI_NORM) / 50;
 }

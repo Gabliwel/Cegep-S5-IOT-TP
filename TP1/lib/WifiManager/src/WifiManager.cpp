@@ -18,9 +18,9 @@ void WifiManager::setup()
     connect();
 }
 
-void WifiManager::loop()
+long WifiManager::getWifiForce()
 {
-    // Serial.println("1");
+    return WiFi.RSSI();
 }
 
 void WifiManager::connect()

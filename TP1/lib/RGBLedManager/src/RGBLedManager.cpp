@@ -61,8 +61,19 @@ void RGBLedManager::loop()
     updateLight();
 }
 
+void RGBLedManager::changeColorOnPmValue(float pm25)
+{
+    changeColor(getColorFromPM25(pm25));
+}
+
 void RGBLedManager::changeColor(Color color)
 {
+    //Si la couleur est la même on ne change rien
+    if(this->currentColor == color)
+    {
+        return;
+    }
+
     this->currentColor = color;
     timer = 0;
     lastTimerChange = 0;
@@ -99,14 +110,23 @@ void RGBLedManager::changeColor(Color color)
     }
 }
 
-Color RGBLedManager::getCurrentColor()
-{
-    return currentColor;
-}
-
 void RGBLedManager::updateLight()
 {
     ledcWrite(1, R);
     ledcWrite(2, G);   
     ledcWrite(3, B); 
+}
+
+Color RGBLedManager::getColorFromPM25(float pm25)
+{
+    if(pm25 < GOOD_PM_LIMIT){
+        return Color::green;
+    }
+    if(pm25 < OK_PM_LIMIT){
+        return Color::yellow;
+    }
+    if(pm25 < BAD_PM_LIMIT){
+        return Color::orange;
+    }
+    return Color::red;
 }

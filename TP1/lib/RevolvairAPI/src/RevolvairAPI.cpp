@@ -11,6 +11,7 @@ void RevolvairAPI::postData()
     StaticJsonDocument<200> doc;
 
     doc["esp8266id"] = "12224532";
+    // https://stackoverflow.com/questions/1995053/const-char-concatenation
     doc["software_version"]   = "Revo-2022-777";
     JsonArray array2 = doc.createNestedArray("sensordatavalues");
     JsonObject nested = array2.createNestedObject();
