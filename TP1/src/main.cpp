@@ -60,7 +60,7 @@ float temperature = 0;
 float humidity = 0;
 
 //AQIScale
-AqiScale aqiscale = AqiScale();
+AqiScale aqiscale = AqiScale(ledManager);
 
 void setup() {
   Serial.begin(115200);
@@ -142,7 +142,30 @@ void loop() {
     }
     timerWifi = millis();
   }
-
   ledManager.loop();
   delay(2);
 }
+
+/*
+void readerloop(){
+  delay(2);
+  time_now = millis();      
+  temperature = tempReader.getTemperatureValue();
+  humidity = tempReader.getHumidityValue();
+  
+  while(millis() < time_now + period){ 
+    pmsValues = pmsReader.getPMSValues();
+    
+  }        
+  Serial.print(pmsValues[0]);
+  Serial.print(",");
+  Serial.print(pmsValues[1]);
+  Serial.print(",");
+  Serial.print(pmsValues[2]);
+  Serial.println("");
+  Serial.print(temperature);
+  Serial.println("");
+  Serial.print(humidity);
+  Serial.println("");
+  Serial.print(aqiscale.getAQI(pmsValues[1]));
+}*/
