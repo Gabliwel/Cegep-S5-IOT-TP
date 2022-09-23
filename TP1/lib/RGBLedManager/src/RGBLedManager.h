@@ -1,3 +1,4 @@
+#pragma once
 #include <Arduino.h>
 
 enum Color {blue, green, yellow, orange, red};

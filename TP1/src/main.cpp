@@ -61,7 +61,7 @@ float temperature = 0;
 float humidity = 0;
 
 //AQIScale
-AqiScale aqiscale = AqiScale();
+AqiScale aqiscale = AqiScale(ledManager);
 
 void setup() {
   Serial.begin(115200);
@@ -90,30 +90,8 @@ void setup() {
   }
 
 }
-void loop() {
-  if(wifiManager.isConnected())
-  {
-    webServer.loop();
-    if(timerApi - lastApiCall > API_INTERVAL)
-    {
-      //Aller chercher du data
-      apiManager.postData();
-      lastApiCall = millis();
-    }
-    timerApi = millis();
-  }
-  else
-  {
-    if(timerWifi - lastConnectionAttempt > CONNECTION_INTERVAL_WIFI)
-    {
-      wifiManager.connect();
-      lastConnectionAttempt = millis();
-    }
-    timerWifi = millis();
-  }
 
-  //changer la couleur avant au besoin, pis check avant le if du wifi
-  ledManager.loop();
+void readerloop(){
   delay(2);
   time_now = millis();      
   temperature = tempReader.getTemperatureValue();
@@ -135,3 +113,32 @@ void loop() {
   Serial.println("");
   Serial.print(aqiscale.getAQI(pmsValues[1]));
 }
+
+void loop() {
+  if(wifiManager.isConnected())
+  {
+    webServer.loop();
+    if(timerApi - lastApiCall > API_INTERVAL)
+    {
+      //Aller chercher du data
+      apiManager.postData();
+      lastApiCall = millis();
+    }
+    timerApi = millis();
+    readerloop();
+  }
+  else
+  {
+    if(timerWifi - lastConnectionAttempt > CONNECTION_INTERVAL_WIFI)
+    {
+      wifiManager.connect();
+      lastConnectionAttempt = millis();
+    }
+    timerWifi = millis();
+  }
+
+  //changer la couleur avant au besoin, pis check avant le if du wifi
+  
+  
+}
+
