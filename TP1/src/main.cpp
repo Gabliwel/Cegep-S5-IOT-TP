@@ -41,7 +41,7 @@ RevolvairWebServer webServer = RevolvairWebServer(server);
 RGBLedManager ledManager = RGBLedManager(ledR, ledG, ledB);
 
 //API
-RevolvairAPI apiManager = RevolvairAPI(MAC_ID);
+RevolvairAPI apiManager = RevolvairAPI();
 long timerApi = 0;
 long lastApiCall = 0;
 const long API_INTERVAL = 1000 * 120;
@@ -62,6 +62,9 @@ float humidity = 0;
 //AQIScale
 AqiScale aqiscale = AqiScale();
 
+//Arduino
+uint32_t chipId = 0;
+
 void setup() {
   Serial.begin(115200);
   Serial2.begin(9600);
@@ -69,6 +72,15 @@ void setup() {
 
   pinMode(BuiltIn_Del, OUTPUT);
   digitalWrite(BuiltIn_Del, LOW);
+
+  //Print du chip id
+  for(int i=0; i<17; i=i+8) {
+    chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+  }
+  Serial.print("Chip ID: "); 
+  Serial.println(chipId);
+  Serial.print("Chip model: "); 
+  Serial.println(ESP.getChipModel());
 
   tempReader.init();
 
@@ -80,8 +92,11 @@ void setup() {
       Serial.println("MDNS responder started");
     }
     webServer.setup();
-    // Aller chercher du data avant
-    // apiManager.postData();
+    //Premier post API
+    temperature = tempReader.getTemperatureValue();
+    humidity = tempReader.getHumidityValue();
+    pmsValues = pmsReader.getPMSValues();
+    apiManager.postData(chipId, wifiManager.getCleanMacAdress(), pmsValues, temperature, humidity);
   }
   else
   {
@@ -126,12 +141,11 @@ void loop() {
     temperature = tempReader.getTemperatureValue();
     humidity = tempReader.getHumidityValue();
     pmsValues = pmsReader.getPMSValues();
-    printLoop();
+    //printLoop();
 
     if(timerApi - lastApiCall > API_INTERVAL)
     {
-      //Aller chercher du data
-      //apiManager.postData();
+      apiManager.postData(chipId, wifiManager.getCleanMacAdress(), pmsValues, temperature, humidity);
       lastApiCall = millis();
     }
     timerApi = millis();
@@ -150,6 +164,10 @@ void loop() {
       if(!wifiManager.isConnected())
       {
         ledManager.changeColor(Color::blue);
+      }
+      else
+      {
+        webServer.setup();
       }
     }
     timerWifi = millis();

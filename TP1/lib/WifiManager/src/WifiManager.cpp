@@ -40,11 +40,20 @@ void WifiManager::connect()
         Serial.println(ssid);
         Serial.print("IP address: ");
         Serial.println(WiFi.localIP());
+        Serial.print("Mac : ");
+        Serial.println(WiFi.macAddress());
+        mac = WiFi.macAddress();
+        mac.replace(":", "");
     }
     else
     {
         Serial.print("Connexion impossible...");
     }
+}
+
+String WifiManager::getCleanMacAdress()
+{
+    return mac;
 }
 
 bool WifiManager::isConnected()
