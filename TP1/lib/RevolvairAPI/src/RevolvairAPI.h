@@ -5,12 +5,11 @@
 class RevolvairAPI
 {
 public:
-    RevolvairAPI(const char* mac_id);
-    void postData();
+    RevolvairAPI();
+    void postData(uint32_t chipId, String macId, int * pmsValues, float temp, float humidity);
 private:
-    void postJSON(String& encodedJSON);
+    void postJSON(String& encodedJSON, String macId);
     char* getDeviceID();
-    const char* MAC_ID;
     const char* API_POST_URL = "https://staging.revolvair.org/api/revolvair/stations/dual/measures";
     const char staging_revolvair_cert_R3 [2000] PROGMEM = R"CERT(
 -----BEGIN CERTIFICATE-----
