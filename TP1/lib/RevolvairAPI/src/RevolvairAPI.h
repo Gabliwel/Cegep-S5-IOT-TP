@@ -7,6 +7,7 @@ class RevolvairAPI
 public:
     RevolvairAPI();
     void postData(uint32_t chipId, String macId, int * pmsValues, float temp, float humidity);
+    void setup();
 private:
     void postJSON(String& encodedJSON, String macId);
     char* getDeviceID();

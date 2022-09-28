@@ -32,19 +32,24 @@ WifiManager wifiManager = WifiManager(SSID, PASSWORD);
 long timerWifi = 0;
 long lastConnectionAttempt = 0;
 const long CONNECTION_INTERVAL_WIFI = 1000 * 20;
+bool wasConnectedLastLoop;
 
 //WebServer
 WebServer server(80);
 RevolvairWebServer webServer = RevolvairWebServer(server);
+float nbLoopSinceWeb;
+float totalPMS2; 
 
 //RGBLedManager
 RGBLedManager ledManager = RGBLedManager(ledR, ledG, ledB);
 
 //API
 RevolvairAPI apiManager = RevolvairAPI();
-long timerApi = 0;
-long lastApiCall = 0;
-const long API_INTERVAL = 1000 * 120;
+
+//Timer API et WebServer
+long timerWebAction = 0;
+long lastWebAction = 0;
+const long WEB_INTERVAL = 1000 * 120;
 
 //PMSReader
 PMS firstPms(Serial2);
@@ -65,6 +70,33 @@ AqiScale aqiscale = AqiScale();
 //Arduino
 uint32_t chipId = 0;
 
+void setChipId()
+{
+  //Print du chip id
+  for(int i=0; i<17; i=i+8) {
+    chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+  }
+  Serial.print("Chip ID: "); 
+  Serial.println(chipId);
+}
+
+void firstConnexion()
+{
+  wifiManager.printInfo();
+  if (MDNS.begin("esp32")) {
+    Serial.println("MDNS responder started");
+  }
+  webServer.setup();
+  apiManager.setup();
+  temperature = tempReader.getTemperatureValue();
+  humidity = tempReader.getHumidityValue();
+  pmsValues = pmsReader.getPMSValues();
+
+  webServer.setCaptorsData(pmsValues[1], aqiscale.getPollutionLvl(pmsValues[1]), temperature, humidity);
+  webServer.setWifiInfo(SSID, wifiManager.getWifiForce());
+  lastWebAction = millis();
+}
+
 void setup() {
   Serial.begin(115200);
   Serial2.begin(9600);
@@ -73,34 +105,20 @@ void setup() {
   pinMode(BuiltIn_Del, OUTPUT);
   digitalWrite(BuiltIn_Del, LOW);
 
-  //Print du chip id
-  for(int i=0; i<17; i=i+8) {
-    chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
-  }
-  Serial.print("Chip ID: "); 
-  Serial.println(chipId);
-  Serial.print("Chip model: "); 
-  Serial.println(ESP.getChipModel());
-
+  setChipId();
   tempReader.init();
 
   wifiManager.setup();
   ledManager.setup();
   if(wifiManager.isConnected())
   {
-    if (MDNS.begin("esp32")) {
-      Serial.println("MDNS responder started");
-    }
-    webServer.setup();
-    //Premier post API
-    temperature = tempReader.getTemperatureValue();
-    humidity = tempReader.getHumidityValue();
-    pmsValues = pmsReader.getPMSValues();
-    apiManager.postData(chipId, wifiManager.getCleanMacAdress(), pmsValues, temperature, humidity);
+    firstConnexion();
+    wasConnectedLastLoop = true;
   }
   else
   {
     lastConnectionAttempt = millis();
+    wasConnectedLastLoop = false;
   }
 }
 
@@ -113,10 +131,6 @@ void printLoop(){
   Serial.print(",");
   Serial.print(pmsValues[2]);
   Serial.println("");
-  //--------------- print le DCL 2.5, mais jsp c'est quoi------------
-  //Serial.print("DCL 2.5: ");
-  //Serial.print("DCL2.5");
-  //Serial.println("");
   Serial.print("IQA de l’air: ");
   Serial.print(aqiscale.getAQI(pmsValues[1]));
   Serial.println("");
@@ -131,32 +145,40 @@ void printLoop(){
 }
 
 void loop() {
+  //Parfois se reconnecte automatiquement sans le connect dans le wifi
+  if(wifiManager.isConnected() && !wasConnectedLastLoop)
+  {
+    firstConnexion();
+  }
+
   if(wifiManager.isConnected())
   {
-    // on pourait aussi obtenir les donnés sans le wifi...
-    // ...mais inutile et non précisé dans l'énoncé
-
-    // l'énoncé dit aussi:
-    // lire les valeurs des capteurs...  ...aux 2 minutes, mais aussi pas clair comme il faut aussi print a chaque refresh
+    wasConnectedLastLoop = true;
     temperature = tempReader.getTemperatureValue();
     humidity = tempReader.getHumidityValue();
     pmsValues = pmsReader.getPMSValues();
-    //printLoop();
+    printLoop();
 
-    if(timerApi - lastApiCall > API_INTERVAL)
+    nbLoopSinceWeb++;
+    totalPMS2 += pmsValues[1];
+
+    if(timerWebAction - lastWebAction > WEB_INTERVAL)
     {
+      Serial.println("----------ACTION WEB-----------");
       apiManager.postData(chipId, wifiManager.getCleanMacAdress(), pmsValues, temperature, humidity);
-      lastApiCall = millis();
+      webServer.setCaptorsData(totalPMS2 / nbLoopSinceWeb, aqiscale.getPollutionLvl(pmsValues[1]), temperature, humidity);
+      webServer.setWifiInfo(SSID, wifiManager.getWifiForce());
+      lastWebAction = millis();
+      totalPMS2 = 0;
+      nbLoopSinceWeb = 0;
     }
-    timerApi = millis();
-
-    webServer.setCaptorsData(pmsValues[1], aqiscale.getPollutionLvl(pmsValues[1]), temperature, humidity);
-    webServer.setWifiInfo(SSID, wifiManager.getWifiForce());
+    timerWebAction = millis();
     webServer.loop();
     ledManager.changeColorOnPmValue(pmsValues[1]);
   }
-  else
+  else 
   {
+    wasConnectedLastLoop = false;
     if(timerWifi - lastConnectionAttempt > CONNECTION_INTERVAL_WIFI)
     {
       wifiManager.connect();
@@ -165,13 +187,8 @@ void loop() {
       {
         ledManager.changeColor(Color::blue);
       }
-      else
-      {
-        webServer.setup();
-      }
     }
     timerWifi = millis();
   }
   ledManager.loop();
-  delay(2);
 }

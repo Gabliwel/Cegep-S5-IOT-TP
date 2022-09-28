@@ -88,6 +88,7 @@ void RevolvairWebServer::setup()
 void RevolvairWebServer::loop()
 {
   this->server->handleClient();
+  delay(2);
 }
 
 void RevolvairWebServer::setCaptorsData(int PM25, char* desc, float temp, float humidity)

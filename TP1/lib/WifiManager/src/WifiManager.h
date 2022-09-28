@@ -12,8 +12,8 @@ public:
     bool isConnected();
     long getWifiForce();
     String getCleanMacAdress();
+    void printInfo();
 private:
     const char* ssid;
     const char* password;
-    String mac = "";
 };

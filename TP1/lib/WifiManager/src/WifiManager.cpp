@@ -33,26 +33,26 @@ void WifiManager::connect()
         Serial.print(".");
         counter += 1;
     }
-
-    if(isConnected())
-    {
-        Serial.print("Connected to ");
-        Serial.println(ssid);
-        Serial.print("IP address: ");
-        Serial.println(WiFi.localIP());
-        Serial.print("Mac : ");
-        Serial.println(WiFi.macAddress());
-        mac = WiFi.macAddress();
-        mac.replace(":", "");
-    }
-    else
+    if(WiFi.status() != WL_CONNECTED)
     {
         Serial.print("Connexion impossible...");
     }
 }
 
+void WifiManager::printInfo()
+{
+    Serial.print("Connected to ");
+    Serial.println(ssid);
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+    Serial.print("Mac : ");
+    Serial.println(WiFi.macAddress());
+}
+
 String WifiManager::getCleanMacAdress()
 {
+    String mac = WiFi.macAddress();
+    mac.replace(":", "");
     return mac;
 }
 
