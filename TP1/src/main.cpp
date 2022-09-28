@@ -53,7 +53,10 @@ const long WEB_INTERVAL = 1000 * 120;
 
 //PMSReader
 PMS firstPms(Serial2);
-PMSReader pmsReader(firstPms);
+PMS secondPms(Serial1);
+PMSReader pmsReader(firstPms, secondPms);
+PMS::DATA data1;
+PMS::DATA data2;
 int * pmsValues;
 
 //DHT
@@ -99,6 +102,7 @@ void firstConnexion()
 
 void setup() {
   Serial.begin(115200);
+  Serial1.begin(9600, SERIAL_8N1, 25, 26); // PMS Serial // tx, rx
   Serial2.begin(9600);
   Serial.println("");
 
@@ -130,6 +134,12 @@ void printLoop(){
   Serial.print(pmsValues[1]);
   Serial.print(",");
   Serial.print(pmsValues[2]);
+  Serial.println("");
+  Serial.print(pmsValues[3]);
+  Serial.print(",");
+  Serial.print(pmsValues[4]);
+  Serial.print(",");
+  Serial.print(pmsValues[5]);
   Serial.println("");
   Serial.print("IQA de l’air: ");
   Serial.print(aqiscale.getAQI(pmsValues[1]));
