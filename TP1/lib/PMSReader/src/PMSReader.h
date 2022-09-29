@@ -1,13 +1,17 @@
 #pragma once
 #include "PMS.h"
+#include "Averager.h"
 
 class PMSReader
 {
 public:
-    PMSReader(PMS &pms);
+    PMSReader(PMS &pms1, PMS &pms2, Averager &averager);
     int * getPMSValues();
 private:
-    PMS * currentPMS;
-    PMS::DATA pmsData; 
-    int values[3]; 
+    PMS * PMS1;
+    PMS * PMS2;
+    PMS::DATA pmsData1; 
+    PMS::DATA pmsData2; 
+    int values[6]; 
+    Averager * averager;
 };
