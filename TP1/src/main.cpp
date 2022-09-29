@@ -21,6 +21,7 @@
 #include <WifiManager.h>
 
 #include <PMS.h>
+#include <Averager.h>
 
 int period = 12000;
 unsigned long time_now = 0;
@@ -54,10 +55,12 @@ const long WEB_INTERVAL = 1000 * 120;
 //PMSReader
 PMS firstPms(Serial2);
 PMS secondPms(Serial1);
-PMSReader pmsReader(firstPms, secondPms);
+Averager averager = Averager();
+PMSReader pmsReader(firstPms, secondPms, averager);
 PMS::DATA data1;
 PMS::DATA data2;
 int * pmsValues;
+
 
 //DHT
 #define DHT_PIN 18 // ESP32 IO18
@@ -168,15 +171,15 @@ void loop() {
     humidity = tempReader.getHumidityValue();
     pmsValues = pmsReader.getPMSValues();
     printLoop();
-
     nbLoopSinceWeb++;
     totalPMS2 += pmsValues[1];
 
     if(timerWebAction - lastWebAction > WEB_INTERVAL)
     {
       Serial.println("----------ACTION WEB-----------");
+      int averagerMeanValue = averager.getAverage();
       apiManager.postData(chipId, wifiManager.getCleanMacAdress(), pmsValues, temperature, humidity);
-      webServer.setCaptorsData(totalPMS2 / nbLoopSinceWeb, aqiscale.getPollutionLvl(pmsValues[1]), temperature, humidity);
+      webServer.setCaptorsData(totalPMS2 / nbLoopSinceWeb, aqiscale.getPollutionLvl(averagerMeanValue), temperature, humidity);
       webServer.setWifiInfo(SSID, wifiManager.getWifiForce());
       lastWebAction = millis();
       totalPMS2 = 0;
