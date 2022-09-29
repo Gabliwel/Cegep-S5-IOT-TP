@@ -1,5 +1,19 @@
+#pragma once
+#include <Arduino.h>
+#include <string>
+#include <algorithm>
+
 class WifiManager
 {
 public:
-    WifiManager();
+    WifiManager(const char* ssid, const char* password);
+    void setup(void);
+    void connect();
+    bool isConnected();
+    long getWifiForce();
+    String getCleanMacAdress();
+    void printInfo();
+private:
+    const char* ssid;
+    const char* password;
 };
