@@ -1,8 +1,8 @@
 #pragma once
 
 //Pour le WIFI
-static const char* SSID = "日本語わかりません";
-static const char* PASSWORD = "1$i50H50";
+static const char* SSID = "DESKTOP-N3EGH27 0046";
+static const char* PASSWORD = "}24s129G";
 
 //Pour le RGD manager
 const uint8_t ledR = 12;  

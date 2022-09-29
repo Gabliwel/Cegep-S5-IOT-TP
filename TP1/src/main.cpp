@@ -39,7 +39,6 @@ bool wasConnectedLastLoop;
 WebServer server(80);
 RevolvairWebServer webServer = RevolvairWebServer(server);
 float nbLoopSinceWeb;
-float totalPMS2; 
 
 //RGBLedManager
 RGBLedManager ledManager = RGBLedManager(ledR, ledG, ledB);
@@ -55,8 +54,10 @@ const long WEB_INTERVAL = 1000 * 120;
 //PMSReader
 PMS firstPms(Serial2);
 PMS secondPms(Serial1);
-Averager averager = Averager();
-PMSReader pmsReader(firstPms, secondPms, averager);
+Averager averager1 = Averager();
+Averager averager2 = Averager();
+Averager averager3 = Averager();
+PMSReader pmsReader(firstPms, secondPms, averager1, averager2, averager3);
 PMS::DATA data1;
 PMS::DATA data2;
 int * pmsValues;
@@ -131,13 +132,14 @@ void setup() {
 
 void printLoop(){
   Serial.println("---------------------");
-  Serial.print("PM: ");
+  Serial.print("PM #1: ");
   Serial.print(pmsValues[0]);
   Serial.print(",");
   Serial.print(pmsValues[1]);
   Serial.print(",");
   Serial.print(pmsValues[2]);
   Serial.println("");
+  Serial.print("PM #2: ");
   Serial.print(pmsValues[3]);
   Serial.print(",");
   Serial.print(pmsValues[4]);
@@ -172,17 +174,18 @@ void loop() {
     pmsValues = pmsReader.getPMSValues();
     printLoop();
     nbLoopSinceWeb++;
-    totalPMS2 += pmsValues[1];
 
     if(timerWebAction - lastWebAction > WEB_INTERVAL)
     {
       Serial.println("----------ACTION WEB-----------");
-      int averagerMeanValue = averager.getAverage();
+      int averagerMeanValue1 = averager1.getAverage(nbLoopSinceWeb);
+      int averagerMeanValue2 = averager2.getAverage(nbLoopSinceWeb);
+      int averagerMeanValue3 = averager3.getAverage(nbLoopSinceWeb);
+      int averagePMS [3] = {averagerMeanValue1, averagerMeanValue2, averagerMeanValue3};
       apiManager.postData(chipId, wifiManager.getCleanMacAdress(), pmsValues, temperature, humidity);
-      webServer.setCaptorsData(totalPMS2 / nbLoopSinceWeb, aqiscale.getPollutionLvl(averagerMeanValue), temperature, humidity);
+      webServer.setCaptorsData(averagerMeanValue2, aqiscale.getPollutionLvl(averagerMeanValue2), temperature, humidity);
       webServer.setWifiInfo(SSID, wifiManager.getWifiForce());
       lastWebAction = millis();
-      totalPMS2 = 0;
       nbLoopSinceWeb = 0;
     }
     timerWebAction = millis();
