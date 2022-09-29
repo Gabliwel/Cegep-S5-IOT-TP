@@ -21,6 +21,7 @@
 #include <WifiManager.h>
 
 #include <PMS.h>
+#include <Averager.h>
 
 int period = 12000;
 unsigned long time_now = 0;
@@ -53,8 +54,13 @@ const long WEB_INTERVAL = 1000 * 120;
 
 //PMSReader
 PMS firstPms(Serial2);
-PMSReader pmsReader(firstPms);
+PMS secondPms(Serial1);
+Averager averager = Averager();
+PMSReader pmsReader(firstPms, secondPms, averager);
+PMS::DATA data1;
+PMS::DATA data2;
 int * pmsValues;
+
 
 //DHT
 #define DHT_PIN 18 // ESP32 IO18
@@ -99,6 +105,7 @@ void firstConnexion()
 
 void setup() {
   Serial.begin(115200);
+  Serial1.begin(9600, SERIAL_8N1, 25, 26); // PMS Serial // tx, rx
   Serial2.begin(9600);
   Serial.println("");
 
@@ -131,6 +138,12 @@ void printLoop(){
   Serial.print(",");
   Serial.print(pmsValues[2]);
   Serial.println("");
+  Serial.print(pmsValues[3]);
+  Serial.print(",");
+  Serial.print(pmsValues[4]);
+  Serial.print(",");
+  Serial.print(pmsValues[5]);
+  Serial.println("");
   Serial.print("IQA de l’air: ");
   Serial.print(aqiscale.getAQI(pmsValues[1]));
   Serial.println("");
@@ -158,15 +171,15 @@ void loop() {
     humidity = tempReader.getHumidityValue();
     pmsValues = pmsReader.getPMSValues();
     printLoop();
-
     nbLoopSinceWeb++;
     totalPMS2 += pmsValues[1];
 
     if(timerWebAction - lastWebAction > WEB_INTERVAL)
     {
       Serial.println("----------ACTION WEB-----------");
+      int averagerMeanValue = averager.getAverage();
       apiManager.postData(chipId, wifiManager.getCleanMacAdress(), pmsValues, temperature, humidity);
-      webServer.setCaptorsData(totalPMS2 / nbLoopSinceWeb, aqiscale.getPollutionLvl(pmsValues[1]), temperature, humidity);
+      webServer.setCaptorsData(totalPMS2 / nbLoopSinceWeb, aqiscale.getPollutionLvl(averagerMeanValue), temperature, humidity);
       webServer.setWifiInfo(SSID, wifiManager.getWifiForce());
       lastWebAction = millis();
       totalPMS2 = 0;
