@@ -10,6 +10,7 @@ public:
     char lvl2[11] = "Acceptable";
     char lvl3[8] = "Mauvais";
     char lvl4[14] = "Très Mauvais";
+    char nd[18] = "PMS non-connecté";
 private:
     RGBLedManager * ledmanager;
     const int goodpm25Limit = 12;

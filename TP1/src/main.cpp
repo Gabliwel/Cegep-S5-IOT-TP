@@ -146,8 +146,11 @@ void printLoop(){
   Serial.print(",");
   Serial.print(pmsValues[5]);
   Serial.println("");
-  Serial.print("IQA de l’air: ");
+  Serial.print("IQA de l’air #1: ");
   Serial.print(aqiscale.getAQI(pmsValues[1]));
+  Serial.println("");
+  Serial.print("IQA de l’air #2: ");
+  Serial.print(aqiscale.getAQI(pmsValues[4]));
   Serial.println("");
   Serial.print("Temperature: ");
   Serial.print(temperature);
@@ -155,7 +158,12 @@ void printLoop(){
   Serial.print("Humidite: ");
   Serial.print(humidity);
   Serial.println("");
-  Serial.println(aqiscale.getPollutionLvl(pmsValues[1]));
+  Serial.print("Niveau pollution #1: ");
+  Serial.print(aqiscale.getPollutionLvl(pmsValues[1]));
+  Serial.println("");
+  Serial.print("Niveau pollution #2: ");
+  Serial.print(aqiscale.getPollutionLvl(pmsValues[4]));
+  Serial.println("");
   Serial.println("---------------------");
 }
 

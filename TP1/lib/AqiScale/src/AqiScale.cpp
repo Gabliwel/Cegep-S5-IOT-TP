@@ -9,6 +9,8 @@ char* AqiScale::getPollutionLvl(int pm25)
 {
   // https://revolvair.org/indice-de-qualite-de-lair-iqa/
   // Échelle pour les données brutes PM 2.5 en microgrammes par mètre cube (μg/m3)
+  if(pm25 == -1)
+    return nd;
   if(pm25 < goodpm25Limit){
     return lvl1;
   }
